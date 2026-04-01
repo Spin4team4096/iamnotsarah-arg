@@ -33,6 +33,7 @@
 [Short] I don't want this to end
 [Short] no active session
 [Short] mostly correct.
+[Stream] Idle
 [Short] :)
 [Short] Felix is Latin for—
 [Video] brass key
