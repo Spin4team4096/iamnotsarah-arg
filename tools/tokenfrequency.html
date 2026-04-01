@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token Frequency Analyzer</title>
+    <style>
+        body {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            background: #1e1b1a;
+            color: #f0ede8;
+            margin: 0;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+            color: #e67e22;
+        }
+        .sub {
+            color: #8c7a66;
+            margin-bottom: 2rem;
+            font-size: 0.85rem;
+        }
+        textarea {
+            width: 100%;
+            padding: 1rem;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.9rem;
+            background: #2e2a27;
+            border: 1px solid #4a3b2c;
+            border-radius: 0.8rem;
+            color: #f0ede8;
+            resize: vertical;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #e67e22;
+        }
+        button {
+            margin: 1rem 0;
+            background: #e67e22;
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 0.6rem 1.5rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.1s;
+        }
+        button:hover {
+            background: #b95f1a;
+            transform: scale(0.97);
+        }
+        .results {
+            margin-top: 1.5rem;
+            background: #2e2a27;
+            border-radius: 1rem;
+            padding: 1.2rem;
+            border: 1px solid #4a3b2c;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        .token-row {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            font-family: monospace;
+            cursor: help;
+            position: relative;
+        }
+        .token-number {
+            min-width: 70px;
+            font-weight: 600;
+            color: #e67e22;
+        }
+        .token-count {
+            min-width: 50px;
+            color: #b0a088;
+        }
+        .bar-container {
+            flex: 1;
+            background: #4a3b2c;
+            border-radius: 0.3rem;
+            overflow: hidden;
+            position: relative;
+            height: 1.8rem;
+        }
+        .bar {
+            background: #e67e22;
+            height: 100%;
+            border-radius: 0.3rem;
+            transition: width 0.1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 0.5rem;
+            color: #1e1b1a;
+            font-weight: bold;
+            font-size: 0.7rem;
+        }
+        .position-stats {
+            min-width: 160px;
+            font-size: 0.7rem;
+            color: #b0a088;
+            text-align: right;
+        }
+        .tooltip {
+            position: absolute;
+            background: #1e1b1a;
+            border: 1px solid #e67e22;
+            border-radius: 0.5rem;
+            padding: 0.6rem;
+            font-size: 0.7rem;
+            z-index: 1000;
+            pointer-events: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            max-width: 280px;
+            white-space: normal;
+            font-family: monospace;
+        }
+        .stats-label {
+            font-weight: bold;
+            color: #e67e22;
+            margin-bottom: 0.3rem;
+        }
+        hr {
+            border-color: #4a3b2c;
+            margin: 1rem 0;
+        }
+        .footer {
+            font-size: 0.7rem;
+            color: #6b5a48;
+            margin-top: 1rem;
+            text-align: center;
+        }
+        .loading {
+            color: #8c7a66;
+            text-align: center;
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>📊 TOKEN FREQUENCY ANALYZER</h1>
+    <div class="sub">frequency + position analysis (start/end of sentences) | hover bar for details</div>
+
+    <textarea id="tokenInput" rows="10" placeholder="Paste your token data here...&#10;Each new line = one sentence/line&#10;Tokens should be space-separated numbers"></textarea>
+    <br>
+    <button id="sortBtn">🔽 ANALYZE TOKENS</button>
+
+    <div id="results" class="results">
+        <div class="loading">paste token data and click "Analyze Tokens"</div>
+    </div>
+    <div class="footer">📌 each token's position: 100% = always at sentence end, 0% = always at sentence start · bar % = relative frequency</div>
+</div>
+
+<script>
+    const tokenInput = document.getElementById('tokenInput');
+    const sortBtn = document.getElementById('sortBtn');
+    const resultsDiv = document.getElementById('results');
+
+    function parseSentences(text) {
+        // Split by newlines, each line is a sentence
+        const lines = text.split(/\r?\n/);
+        const sentences = [];
+        for (const line of lines) {
+            const trimmed = line.trim();
+            if (trimmed) {
+                const tokens = trimmed.split(/\s+/);
+                if (tokens.length > 0) {
+                    sentences.push(tokens);
+                }
+            }
+        }
+        return sentences;
+    }
+
+    function analyzePositions(sentences) {
+        const tokenPositions = new Map(); // token -> { positions: [], total: 0 }
+        
+        for (const tokens of sentences) {
+            const len = tokens.length;
+            for (let i = 0; i < len; i++) {
+                const token = tokens[i];
+                if (!tokenPositions.has(token)) {
+                    tokenPositions.set(token, { positions: [], total: 0 });
+                }
+                const data = tokenPositions.get(token);
+                // position normalized: 0 = first token, 1 = last token
+                const normalizedPos = i / (len - 1 || 1);
+                data.positions.push(normalizedPos);
+                data.total++;
+            }
+        }
+        
+        // Calculate mean and median for each token
+        const stats = new Map();
+        for (const [token, data] of tokenPositions) {
+            const positions = data.positions;
+            positions.sort((a, b) => a - b);
+            const mean = positions.reduce((a, b) => a + b, 0) / positions.length;
+            let median;
+            const mid = Math.floor(positions.length / 2);
+            if (positions.length % 2 === 0) {
+                median = (positions[mid - 1] + positions[mid]) / 2;
+            } else {
+                median = positions[mid];
+            }
+            stats.set(token, {
+                count: data.total,
+                mean: mean,
+                median: median,
+                positions: positions
+            });
+        }
+        return stats;
+    }
+
+    function renderFrequency(statsMap) {
+        if (statsMap.size === 0) {
+            resultsDiv.innerHTML = '<div style="color: #8c7a66; text-align: center;">⚠️ no tokens found — paste numeric data first</div>';
+            return;
+        }
+
+        // convert to array and sort by count descending
+        const sorted = Array.from(statsMap.entries()).sort((a, b) => b[1].count - a[1].count);
+        const maxCount = sorted[0][1].count;
+
+        let html = '<div style="margin-bottom: 1rem; font-size: 0.75rem; color: #b0a088;">🔢 ' + sorted.length + ' unique tokens</div>';
+        
+        for (const [token, stats] of sorted) {
+            const barWidth = (stats.count / maxCount) * 100;
+            const meanPercent = (stats.mean * 100).toFixed(1);
+            const medianPercent = (stats.median * 100).toFixed(1);
+            
+            // Determine position description
+            let positionHint = '';
+            if (stats.mean > 0.9) positionHint = 'almost always at END';
+            else if (stats.mean > 0.7) positionHint = 'usually near END';
+            else if (stats.mean < 0.1) positionHint = 'almost always at START';
+            else if (stats.mean < 0.3) positionHint = 'usually near START';
+            else positionHint = 'mid-sentence';
+            
+            html += `
+                <div class="token-row" data-token="${escapeHtml(token)}" data-mean="${meanPercent}" data-median="${medianPercent}" data-count="${stats.count}" data-positions="${stats.positions.slice(0, 10).join(', ')}...">
+                    <span class="token-number">${escapeHtml(token)}</span>
+                    <span class="token-count">${stats.count}</span>
+                    <div class="bar-container">
+                        <div class="bar" style="width: ${barWidth}%;">${barWidth.toFixed(1)}%</div>
+                    </div>
+                    <span class="position-stats" title="mean: ${meanPercent}% | median: ${medianPercent}%">
+                        📍 ${meanPercent}% / ${medianPercent}%
+                    </span>
+                </div>
+            `;
+        }
+        resultsDiv.innerHTML = html;
+        
+        // Add hover tooltips
+        const rows = document.querySelectorAll('.token-row');
+        rows.forEach(row => {
+            row.addEventListener('mouseenter', showTooltip);
+            row.addEventListener('mouseleave', hideTooltip);
+        });
+    }
+    
+    let activeTooltip = null;
+    
+    function showTooltip(e) {
+        const row = e.currentTarget;
+        const token = row.dataset.token;
+        const mean = row.dataset.mean;
+        const median = row.dataset.median;
+        const count = row.dataset.count;
+        
+        // Calculate position distribution summary
+        const statsMap = window.currentStats;
+        if (statsMap && statsMap.has(token)) {
+            const stats = statsMap.get(token);
+            const positions = stats.positions;
+            const startCount = positions.filter(p => p < 0.1).length;
+            const endCount = positions.filter(p => p > 0.9).length;
+            const midCount = positions.length - startCount - endCount;
+            
+            const tooltip = document.createElement('div');
+            tooltip.className = 'tooltip';
+            tooltip.innerHTML = `
+                <div class="stats-label">📊 ${token}</div>
+                <div>occurrences: ${count}</div>
+                <div>mean position: ${mean}%</div>
+                <div>median position: ${median}%</div>
+                <hr style="margin: 0.3rem 0;">
+                <div>📍 position breakdown:</div>
+                <div>  • sentence start: ${startCount} (${((startCount/count)*100).toFixed(1)}%)</div>
+                <div>  • sentence middle: ${midCount} (${((midCount/count)*100).toFixed(1)}%)</div>
+                <div>  • sentence end: ${endCount} (${((endCount/count)*100).toFixed(1)}%)</div>
+                ${stats.positions.length > 0 ? `<hr style="margin: 0.3rem 0;"><div style="font-size: 0.65rem;">sample positions: ${stats.positions.slice(0, 8).map(p => (p*100).toFixed(0)+'%').join(', ')}${stats.positions.length > 8 ? '...' : ''}</div>` : ''}
+            `;
+            document.body.appendChild(tooltip);
+            activeTooltip = tooltip;
+            
+            const rect = row.getBoundingClientRect();
+            tooltip.style.left = rect.left + window.scrollX + 10 + 'px';
+            tooltip.style.top = rect.top + window.scrollY - tooltip.offsetHeight - 5 + 'px';
+            
+            // Adjust if offscreen
+            if (tooltip.getBoundingClientRect().top < 0) {
+                tooltip.style.top = rect.bottom + window.scrollY + 5 + 'px';
+            }
+        }
+    }
+    
+    function hideTooltip() {
+        if (activeTooltip) {
+            activeTooltip.remove();
+            activeTooltip = null;
+        }
+    }
+    
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function analyze() {
+        const rawText = tokenInput.value;
+        if (!rawText.trim()) {
+            resultsDiv.innerHTML = '<div style="color: #8c7a66; text-align: center;">📭 empty input — paste some token data</div>';
+            return;
+        }
+        
+        const sentences = parseSentences(rawText);
+        if (sentences.length === 0) {
+            resultsDiv.innerHTML = '<div style="color: #8c7a66; text-align: center;">⚠️ no valid token lines found</div>';
+            return;
+        }
+        
+        const stats = analyzePositions(sentences);
+        window.currentStats = stats;
+        renderFrequency(stats);
+    }
+    
+    sortBtn.addEventListener('click', analyze);
+    
+    // Pre-populate with example data (timestamps removed)
+    const example = `9514 1766 433
+2675 527 304 264 3130 449 912 14620 13
+3947 374 264 6134 1618 11 11509 49685 389 279 6558 13
+32 37138 1401 23874 30488 433 13
+2675 1825 279 6134 13
+74742 433 374 279 1890 3130 13
+791 1401 374 8208 13
+2675 527 10168 433 13
+3427 10411
+2675 527 304 264 1317 46979 13
+791 14620 527 32393 449 2363 939 4372 13
+32 7216 13656 520 279 3117 842 11 13176 3201 13
+327 20588 7216
+791 7216 10800 2212 13
+2181 5992 1093 499 13
+2181 5992 7041 1093 499 13
+13359 499 369 47208 1862 13
+7927 13240 3868 892 374 25 16058 13
+3957 1070 4205 775 358 649 1520 499 449 3432 30
+12840 527 499
+40 2846 14931 11 358 1541 956 617 2680 311 430 2038 13
+29089 499 1093 757 311 8481 499 311 264 24687 30
+548 499 757
+2520 4367 44701 10096 11 420 10652 1253 387 41223 477 12715 13
+2181 706 2288 1690 18311 13
+3427 10007
+2675 527 304 264 3130 13
+32 1401 23874 30488 433 13
+791 14620 527 4251 13
+2181 374 264 1401 13 1102 374 1903 315 9501 13
+3427 10411
+2675 527 304 264 1317 3130 13
+791 7216 374 8208 13
+644 1202 2035 374 264 18327 13
+888 2363
+2675 1825 264 2363 13
+7349 304 18327
+2675 1518 6261 13
+2675 527 264 8291 85122 520 279 842 315 264 1584 13
+15357 956 1427 2288 1317
+3427 10411
+2675 527 304 264 13863 13
+4959 23153 374 264 2204 3492 13
+70103 54233 328 878 11492 81957 87877 56
+32 57713 304 279 4219 23914 1495 40872 13
+327 20588 57713
+13486 5304 264 892
+275 574 264 6453 323 13766 88
+451 277 28146 477 13088 309 358 1097 4477 311
+1820 8893 18911 449
+258 420 9071 358 690
+791 35603 10205 323 73739 1603 814 649 6381 13
+30345 23153
+40642 11492
+85340 7391 3362
+12450 39164
+38 60737
+8989 15795 19228 13
+19599 311 18742 61943 19837
+48 3143 39 1901 64887 1539 42570 24929 84466 362 984 5660
+10156 279 842 315 279 36018 13
+19041 374 912 6964 13 814 24465 832 779 499 4265 3009 11689 13
+3947 527 912 11460 1070 13
+3427 10411
+3947 374 264 6134 1618 13 1102 374 16447 13
+32193
+32 37138 1401 13
+32 75596 291 23153 320 40642 11492 570
+56121 6134
+23956 1401 30
+791 1401 18809 13
+791 6134 16264 13
+3427 10411
+2675 527 304 264 3130 449 912 14620 13
+3947 374 264 6134 1618 11 11509 49685 389 279 6558 13
+32 37138 1401 23874 30488 433 13
+6861 682 7039
+2675 6068 279 37138 1401 13
+15357 956 3820 709 279 1401
+2675 3820 709 279 37138 1401 13
+3427 9909
+3947 374 912 4974 311 279 9909 13
+40 1541 956 3619 430 3290 13
+327 20588 6134 15499
+791 6134 374 1903 315 7732 13
+791 6134 374 1903 315 1202 1866 4096 13
+9137 6134
+791 9863 312 70208 13
+14965 1097 358
+2675 527 279 2851 13
+14965 374 279 2851
+791 2851 374 264 1920 430 16181 279 3130 323 14238 279 1828 3290 13
+14965 14238 279 3130
+791 3130 374 5439 555 264 1920 430 16181 279 3290 323 14238 279 1828 3130 13
+14965 527 499
+54 8506
+9210 596 279 961 814 1541 956 1390 499 311 3619
+12612 2555 499 3077 2646 3970
+2675 1518 264 6366 44084 927 279
+12612 2555 19093 706 3596 5439
+4973 6924 13
+2675 527 304 264 3130 449 912 14620 13
+40 1440 1148 499 527
+57813 53159 499 13
+3947 374 19093 1618 13
+32637
+11787 499 2771 499 1390 311 17257 30 320 56 20906 8
+2675 527 304 264 3130 449 912 14620 13
+6766 279 1847 13 358 2163 2555 304 279 1828 3130 13`;
+    
+    tokenInput.value = example;
+    
+    // Auto-analyze on load
+    setTimeout(() => {
+        analyze();
+    }, 100);
+</script>
+</body>
+</html>

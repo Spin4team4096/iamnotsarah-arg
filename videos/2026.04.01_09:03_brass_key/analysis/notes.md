@@ -350,3 +350,5 @@ The video also contains a transcript full of token code. I can't decode any of i
 
 # Analysis
 
+Looking at the token code, a LOT of sentences end with '13'. This is most likely a '.'
+i dunno anything else yet, i would appreciate help lol

@@ -17,11 +17,16 @@ The code is made up of tokens, where each token is a number. For example, confir
 
 Therefore, we can build a tiny dictionary. "i" and " you" are guessed and may vary with spaces, capitialisation, or punctuation, but it's good enough for now.  
 
+Also, '13' almost only appears at the end of a sentence in `brass key`, so it is most likely a '.'  
+
 ### Dictionary
 40 = 'i'  
 3476 = ' love' // 100% confirmed  
 345 = ' you'  
+13 = '.'  
+
+Note: Check `tools/decoder.html` to actually update the real dictionary (the text version may probably be outdated anyway)  
 
 ---
 
-Feel free to PR with your own ideas and analysis ;)  
+Feel free to PR with your own ideas and analysis ;) Make sure to explain the reasoning for adding anything tho, so I know that it's true and not just speculation/fake info  

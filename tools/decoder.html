@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token Codec · ARG Cipher Tool</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: system-ui, 'Segoe UI', monospace;
+            background: #f5f2e8;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        .container {
+            background: white;
+            border-radius: 2rem;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.2);
+            padding: 2rem;
+            width: 100%;
+            max-width: 1100px;
+        }
+        h1 {
+            font-size: 1.6rem;
+            font-weight: 500;
+            margin: 0 0 0.25rem 0;
+            letter-spacing: -0.3px;
+            color: #1e1b1a;
+        }
+        .sub {
+            color: #5e5a58;
+            margin-bottom: 2rem;
+            border-left: 3px solid #e67e22;
+            padding-left: 1rem;
+            font-size: 0.9rem;
+        }
+        .workspace {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+            align-items: stretch;
+        }
+        .panel {
+            flex: 1;
+            min-width: 280px;
+            background: #fefcf8;
+            border-radius: 1.2rem;
+            padding: 1rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            border: 1px solid #e9e2d4;
+        }
+        .panel label {
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #b45f2b;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        textarea {
+            width: 100%;
+            border: 1px solid #ddd2c0;
+            border-radius: 1rem;
+            padding: 1rem;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.9rem;
+            background: white;
+            resize: vertical;
+            transition: 0.1s;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #e67e22;
+            box-shadow: 0 0 0 2px rgba(230,126,34,0.2);
+        }
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 1rem;
+            padding: 0 0.2rem;
+        }
+        button {
+            background: #2c2b28;
+            border: none;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 3rem;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: inherit;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        button:hover {
+            background: #e67e22;
+            transform: scale(0.96);
+        }
+        button:active {
+            background: #b95f1a;
+        }
+        .dictionary-card {
+            margin-top: 2rem;
+            background: #f7f3ec;
+            border-radius: 1rem;
+            padding: 1rem 1.2rem;
+            font-size: 0.85rem;
+            border: 1px solid #e6ddcf;
+        }
+        .dictionary-card summary {
+            font-weight: 600;
+            cursor: pointer;
+            color: #4a3b2c;
+        }
+        pre {
+            background: #2e2a27;
+            color: #f8eedb;
+            padding: 0.8rem;
+            border-radius: 0.8rem;
+            overflow-x: auto;
+            font-size: 0.8rem;
+            margin: 0.8rem 0 0 0;
+        }
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #8c7a66;
+            margin-top: 1.5rem;
+        }
+        @media (max-width: 700px) {
+            .workspace { flex-direction: column; }
+            .button-group { flex-direction: row; justify-content: center; }
+            body { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>⚙️ TOKEN CODEC</h1>
+    <div class="sub">encode ⇄ decode | custom dictionary (ARG token cipher)</div>
+
+    <div class="workspace">
+        <div class="panel">
+            <label>📝 PLAINTEXT (encode input / decode result)</label>
+            <textarea id="plainBox" rows="5" placeholder="Example:&#10;i love you&#10;&#10;Or after decode: i love you">i love you</textarea>
+        </div>
+
+        <div class="button-group">
+            <button id="encodeBtn">Encode →</button>
+            <button id="decodeBtn">← Decode</button>
+        </div>
+
+        <div class="panel">
+            <label>🔢 TOKEN STRING (decode input / encode result)</label>
+            <textarea id="tokenBox" rows="5" placeholder="Example:&#10;40 3476 345">40 3476 345</textarea>
+        </div>
+    </div>
+
+    <details class="dictionary-card">
+        <summary>📖 Token dictionary (built‑in) – click to expand</summary>
+        <pre id="dictPreview"></pre>
+        <p style="margin: 0.5rem 0 0 0; font-size: 0.75rem; color: #6b5a48;">
+            ⚡ <strong>Encoding:</strong> longest phrase match (case‑sensitive). Unknown substrings stay as‑is.<br>
+            ⚡ <strong>Decoding:</strong> unknown tokens become <code> token </code> (spaced) to preserve separation.<br>
+            ⚡ <strong>Multi‑line:</strong> each line is processed independently; output preserves line breaks.
+        </p>
+    </details>
+    <footer>
+        ← encode: plaintext → token string &nbsp;&nbsp;|&nbsp;&nbsp; decode: token string → plaintext →
+    </footer>
+</div>
+
+<script>
+    // ---------- CORE DICTIONARY (TOKEN → WORD) ----------
+    const TOKEN_DICT = {
+        "40": "i",
+        "3476": " love",
+        "345": " you"
+        // you can easily add more tokens here, e.g.:
+        // "100": " hello",
+        // "200": " world"
+    };
+
+    // Build reverse map (word/phrase → token) for encoding (longest match)
+    const phraseToToken = new Map();
+    let sortedPhrases = [];
+    for (const [token, phrase] of Object.entries(TOKEN_DICT)) {
+        phraseToToken.set(phrase, token);
+        sortedPhrases.push(phrase);
+    }
+    sortedPhrases.sort((a, b) => b.length - a.length);
+
+    // ----- DECODING: token string → plain text (single line) -----
+    function decodeLine(tokensStr) {
+        if (!tokensStr.trim()) return "";
+        const tokens = tokensStr.trim().split(/\s+/);
+        // Build the decoded string by concatenating each token's representation
+        let result = "";
+        for (const token of tokens) {
+            if (TOKEN_DICT[token] !== undefined) {
+                // known token: append its dictionary value (may have leading/trailing spaces)
+                result += TOKEN_DICT[token];
+            } else {
+                // unknown token: surround with spaces to separate from neighbors
+                result += " " + token + " ";
+            }
+        }
+        // Clean up leading/trailing spaces and collapse multiple spaces
+        return result.trim().replace(/\s+/g, ' ');
+    }
+
+    // ----- ENCODING: plain text → token string (single line, longest phrase match) -----
+    function encodeLine(plainText) {
+        if (!plainText) return "";
+        let input = plainText;
+        let resultTokens = [];
+        let i = 0;
+        const len = input.length;
+
+        while (i < len) {
+            let matched = false;
+            for (const phrase of sortedPhrases) {
+                const phraseLen = phrase.length;
+                if (i + phraseLen <= len && input.substring(i, i + phraseLen) === phrase) {
+                    const token = phraseToToken.get(phrase);
+                    resultTokens.push(token);
+                    i += phraseLen;
+                    matched = true;
+                    break;
+                }
+            }
+            if (!matched) {
+                resultTokens.push(input[i]);
+                i++;
+            }
+        }
+
+        // Build output string: tokens separated by spaces, literals appended without extra spaces
+        let output = "";
+        for (let idx = 0; idx < resultTokens.length; idx++) {
+            const piece = resultTokens[idx];
+            if (TOKEN_DICT[piece] !== undefined) {
+                // token → add space before unless first element
+                if (output.length > 0 && !output.endsWith(" ")) output += " ";
+                output += piece;
+            } else {
+                // literal character → just append
+                output += piece;
+            }
+        }
+        return output.replace(/\s+/g, " ").trim();
+    }
+
+    // ----- MULTI‑LINE HANDLERS -----
+    const plainBox = document.getElementById("plainBox");
+    const tokenBox = document.getElementById("tokenBox");
+    const encodeBtn = document.getElementById("encodeBtn");
+    const decodeBtn = document.getElementById("decodeBtn");
+
+    encodeBtn.addEventListener("click", () => {
+        const plain = plainBox.value;
+        const lines = plain.split(/\r?\n/);
+        const encodedLines = lines.map(line => encodeLine(line));
+        tokenBox.value = encodedLines.join("\n");
+    });
+
+    decodeBtn.addEventListener("click", () => {
+        const tokensRaw = tokenBox.value;
+        const lines = tokensRaw.split(/\r?\n/);
+        const decodedLines = lines.map(line => decodeLine(line));
+        plainBox.value = decodedLines.join("\n");
+    });
+
+    // --- populate dictionary preview ---
+    function renderDictPreview() {
+        const pre = document.getElementById("dictPreview");
+        pre.textContent = JSON.stringify(TOKEN_DICT, null, 2);
+    }
+    renderDictPreview();
+
+    // initial sync (example)
+    window.addEventListener("load", () => {
+        const initPlain = plainBox.value.trim();
+        if (initPlain === "i love you") {
+            tokenBox.value = encodeLine(initPlain);
+        } else if (tokenBox.value.trim() === "40 3476 345") {
+            plainBox.value = decodeLine(tokenBox.value);
+        }
+    });
+</script>
+</body>
+</html>

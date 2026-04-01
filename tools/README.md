@@ -1,1 +1,3 @@
-This will later have tools to be able to decode/encode messages. I will code this at some point. `word` and `brass key` use code messages, so give a go at cracking them ;)
+This contains tools speicfically for decoding the 'token code'. `brass key` and `word` have been found to contain token code.
+
+Currently, the tools are AI-generated (although not blindly copy-pasted) because I needed to quickly get it over and done with and I really need to sleep rn, but human tools are preffered!
