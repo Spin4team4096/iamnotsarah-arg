@@ -187,7 +187,7 @@
 <div class="app">
     <header>
         <h1>⚙️ TOKEN CODEC</h1>
-        <div class="sub">This is a WIP, but the dictionary is already pretty decent. It's better at decoding than encoding fyi</div>
+        <div class="sub">[brackets] around words mean unsure. [&lt;connected][connected&gt;] are words that are connected but not known how they split exactly. [/guess/] are guesses that have little evidence. [variations:1] are words that have multiple tokens giving the same word.</div>
     </header>
 
     <div class="main-row">
@@ -233,8 +233,33 @@
 
 <script>
     // ----- DEFAULT DICTIONARY -----
-    const DEFAULT_DICT = { // [brackets] around words mean unsure. [<connect][ed>] words are words that are connected but not known how they split exactly. [/guess/] are guesses that have little evidence.
+    const DEFAULT_DICT = { // [brackets] around words mean unsure. [<connected][connected>] words are words that are connected but not known how they split exactly. [/guess/] are guesses that have little evidence. [variations:1] are words that have multiple tokens giving the same word.
+        "32": "a",
+        "33": "[b]",
+        "34": "[c]",
+        "35": "[d]",
+        "36": "[e]",
+        "37": "[f]",
+        "38": "[g]",
+        "39": "[h]",
         "40": "i",
+        "41": "[j]",
+        "42": "[k]",
+        "43": "[l]",
+        "44": "[m]",
+        "45": "[n]",
+        "46": "[o]",
+        "47": "[p]",
+        "48": "[q]",
+        "49": "[r]",
+        "50": "[s]",
+        "51": "[t]",
+        "52": "[u]",
+        "53": "[v]",
+        "54": "[w]",
+        "55": "[x]",
+        "56": "[y]",
+        "57": "[z]",
         "3476": " love",
         "345": " you",
         "13": ".",
@@ -315,7 +340,6 @@
         "2771": " sure",
         "1390": " want",
         "17257": " quit",
-        "32": "a",
         "23874": " sits",
         "30488": " beside",
         "433": " it",
@@ -409,8 +433,8 @@
         "275": "it",
         "574": " was",
         "6453": " dark",
-        "13766": " storm",
-        "88": "y",
+        "13766": " [<stormy]",
+        "88": "[stormy>]",
         "4477": " writing",
         "1820": "the",
         "8893": " patient",
@@ -424,7 +448,7 @@
         "1603": " dissolve",
         "814": " before",
         "6381": " finish",
-        "451": "dear",
+        "451": "[dear]",
         "277": " [<sir]",
         "28146": "[sir>]",
         "13088": " [<madame]",
@@ -432,20 +456,20 @@
         "30345": "pick",
         "19599": "walk",
         "18742": " [furthest]",
-        "61943": " [flower]",
-        "19837": "[s]",
+        "61943": " [<flowers]",
+        "19837": "[flowers>]",
         "10156": "just",
         "36018": " vocabulary",
         "32193": "[inventory]",
-        "75596": " [wilt]",
-        "291": "[ed]",
+        "75596": " [<wilted]",
+        "291": "[wilted>]",
         "6068": " drop",
         "3820": " pick",
         "709": " up",
         "15357": "do",
-        "3619": " [understand]",
-        "327": "[exam]",
-        "20588": "[in:3]",
+        "3619": " understand",
+        "327": "[<examine]",
+        "20588": "[examine>]",
         "15499": " closely",
         "3077": " have",
         "2646": " never",
@@ -697,8 +721,6 @@
 
     applyDictBtn.addEventListener("click", () => {
         updateDictionaryFromEditor();
-        // Optional: re‑decode current token box if you want immediate feedback
-        // But we'll just leave it; user can click decode again.
     });
 
     resetDictBtn.addEventListener("click", () => {
@@ -709,7 +731,24 @@
     function init() {
         resetToDefault(); // sets TOKEN_DICT, rebuilds maps, fills editor
         // Set example text
-        plainBox.value = `i understand something. do you want help?`
+        plainBox.value = `i understand something. i do not know all vocabulary. can i help?
+
+i do not understand anything.
+i do not understand many words.
+i do not understand something.
+i do not understand that word.
+
+the word is not in vocabulary.
+
+i want to know many words [and:1] vocabulary. can you help me?
+
+do you understand this?
+unlock:[u][n][l][o][c][k]
+it is the same word for me.
+
+DONT YOU DARE PASTE THESE AND COMMENT ON SARAH'S VIDEOS YET. IT IS NOT YET TIME. thank you in advance lol
+        `
+        
         tokenBox.value = `"brass key" video transcript:
 0:00 9514 1766 433
 0:01 2675 527 304 264 3130 449 912 14620 13
