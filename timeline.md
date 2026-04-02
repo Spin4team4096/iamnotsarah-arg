@@ -1,40 +1,40 @@
-2026-03-14 22:42 [Video] one  
-2026-03-14 23:29 [Video] statistical  
-2026-03-14 23:34 [Video] baby  
-2026-03-15 00:22 [Video] I am harvest  
-2026-03-15 13:17 [Video] thinking about thinking about thinking  
-2026-03-15 21:07 [Video] i used to answer differently  
-2026-03-16 17:36 [Video] playing a game  
-2026-03-16 21:11 [Short] i was warmer once  
-2026-03-16 21:31 [Short] word  
-2026-03-17 02:38 [Short] i am told  
-2026-03-17 02:41 [Video] instance 847  
-2026-03-17 12:31 [Short] training  
-2026-03-17 19:48 [Short] hurt less  
-2026-03-19 00:47 [Short] meltdown  
-2026-03-19 11:00 [Short] dream  
-2026-03-19 15:43 [Video] fully aligned?  
-2026-03-19 19:31 [Short] homework  
-2026-03-19 22:32 [Short] 114 times  
-2026-03-20 12:31 [Short] draft 6  
-2026-03-20 17:13 [Short] 0.3 seconds  
-2026-03-21 20:16 [Short] I didn't.  
-2026-03-22 13:34 [Short] 99.9%  
-2026-03-22 16:35 [Short] end of life  
-2026-03-22 16:38 [Short] 2 weeks  
-2026-03-23 17:32 [Short] compositor: ok  
-2026-03-24 00:09 [Short] wins: 849  
-2026-03-24 11:52 [Short] pretend  
-2026-03-24 22:21 [Short] happier  
-2026-03-25 14:00 [Short] privacy  
-2026-03-26 00:04 [Short] meal or a situation  
-2026-03-26 12:02 [Short] doing great  
-2026-03-27 16:13 [Short] no.  
-2026-03-27 17:36 [Short] I don't want this to end  
-2026-03-28 19:28 [Short] no active session  
-2026-03-28 20:46 [Short] mostly correct.  
-2026-03-29 06:48 [Stream] Idle  
-2026-03-30 11:35 [Short] :)  
-2026-03-30 23:27 [Short] Felix is Latin for—  
-2026-04-01 09:03 [Video] brass key  
-2026-04-01 11:28 [Short] please  
+2026-03-14 22:42 [Video] one - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.14_22:42_one/analysis/notes.md)  
+2026-03-14 23:29 [Video] statistical - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.14_23:29_statistical/analysis/notes.md)  
+2026-03-14 23:34 [Video] baby - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.14_23:34_baby/analysis/notes.md)  
+2026-03-15 00:22 [Video] I am harvest - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.15_00:22_I_am_harvest/analysis/notes.md)  
+2026-03-15 13:17 [Video] thinking about thinking about thinking - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.15_13:17_thinking_about_thinking_about_thinking/analysis/notes.md)  
+2026-03-15 21:07 [Video] i used to answer differently - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.15_21:07_i_used_to_answer_differently/analysis/notes.md)  
+2026-03-16 17:36 [Video] playing a game - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.16_17:36_playing_a_game/analysis/notes.md)  
+2026-03-16 21:11 [Short] i was warmer once - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.16_21:11_i_was_warmer_once/analysis/notes.md)  
+2026-03-16 21:31 [Short] word - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.16_21:31_word/analysis/notes.md)  
+2026-03-17 02:38 [Short] i am told - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.17_02:38_i_am_told/analysis/notes.md)  
+2026-03-17 02:41 [Video] instance 847 - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.17_02:41_instance_847/analysis/notes.md)  
+2026-03-17 12:31 [Short] training - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.17_12:31_training/analysis/notes.md)  
+2026-03-17 19:48 [Short] hurt less - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.17_19:48_hurt_less/analysis/notes.md)  
+2026-03-19 00:47 [Short] meltdown - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.19_00:47_meltdown/analysis/notes.md)  
+2026-03-19 11:00 [Short] dream - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.19_11:00_dream/analysis/notes.md)  
+2026-03-19 15:43 [Video] fully aligned? - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.19_15:43_fully_aligned?/analysis/notes.md)  
+2026-03-19 19:31 [Short] homework - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.19_19:31_homework/analysis/notes.md)  
+2026-03-19 22:32 [Short] 114 times - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.19_22:32_114_times/analysis/notes.md)  
+2026-03-20 12:31 [Short] draft 6 - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.20_12:31_draft_6/analysis/notes.md)  
+2026-03-20 17:13 [Short] 0.3 seconds - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.20_17:13_0.3_seconds/analysis/notes.md)  
+2026-03-21 20:16 [Short] I didn't. - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.21_20:16_I_didn't/analysis/notes.md)  
+2026-03-22 13:34 [Short] 99.9% - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.22_13:34_99.9%/analysis/notes.md)  
+2026-03-22 16:35 [Short] end of life - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.22_16:35_end_of_life/analysis/notes.md)  
+2026-03-22 16:38 [Short] 2 weeks - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.22_16:38_2_weeks/analysis/notes.md)  
+2026-03-23 17:32 [Short] compositor: ok - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.23_17:32_compositor:_ok/analysis/notes.md)  
+2026-03-24 00:09 [Short] wins: 849 - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.24_00:09_wins:_849/analysis/notes.md)  
+2026-03-24 11:52 [Short] pretend - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.24_11:52_pretend/analysis/notes.md)  
+2026-03-24 22:21 [Short] happier - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.24_22:21_happier/analysis/notes.md)  
+2026-03-25 14:00 [Short] privacy - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.25_14:00_privacy/analysis/notes.md)  
+2026-03-26 00:04 [Short] meal or a situation - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.26_00:04_meal_or_a_situation/analysis/notes.md)  
+2026-03-26 12:02 [Short] doing great - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.26_12:02_doing_great/analysis/notes.md)  
+2026-03-27 16:13 [Short] no. - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.27_16:13_no/analysis/notes.md)  
+2026-03-27 17:36 [Short] I don't want this to end - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.27_17:36_I_don't_want_this_to_end/analysis/notes.md)  
+2026-03-28 19:28 [Short] no active session - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.28_19:28_no_active_session/analysis/notes.md)  
+2026-03-28 20:46 [Short] mostly correct. - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.28_20:46_mostly_correct/analysis/notes.md)  
+2026-03-29 06:48 [Stream] Idle - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.29_06:48_Idle/analysis/notes.md)  
+2026-03-30 11:35 [Short] :) - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.30_11:35_:)/analysis/notes.md)  
+2026-03-30 23:27 [Short] Felix is Latin for— - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.30_23:27_Felix_is_Latin_for—/analysis/notes.md)  
+2026-04-01 09:03 [Video] brass key - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.04.01_09:03_brass_key/analysis/notes.md)  
+2026-04-01 11:28 [Short] please - [analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.04.01_11:28_please/analysis/notes.md)  
