@@ -42,8 +42,14 @@
             outline: none;
             border-color: #e67e22;
         }
-        button {
+        .control-bar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
             margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+        button {
             background: #e67e22;
             border: none;
             color: white;
@@ -57,6 +63,20 @@
         button:hover {
             background: #b95f1a;
             transform: scale(0.97);
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            color: #b0a088;
+            font-size: 0.9rem;
+        }
+        .checkbox-label input {
+            width: 1.2rem;
+            height: 1.2rem;
+            cursor: pointer;
+            accent-color: #e67e22;
         }
         .results {
             margin-top: 1.5rem;
@@ -147,6 +167,11 @@
             text-align: center;
             padding: 2rem;
         }
+        .filter-note {
+            font-size: 0.7rem;
+            color: #8c7a66;
+            margin-left: 0.5rem;
+        }
     </style>
 </head>
 <body>
@@ -155,8 +180,15 @@
     <div class="sub">frequency + position analysis (start/end of sentences) | hover bar for details</div>
 
     <textarea id="tokenInput" rows="10" placeholder="Paste your token data here...&#10;Each new line = one sentence/line&#10;Tokens should be space-separated numbers"></textarea>
-    <br>
-    <button id="sortBtn">🔽 ANALYZE TOKENS</button>
+    
+    <div class="control-bar">
+        <button id="sortBtn">🔽 ANALYZE TOKENS</button>
+        <label class="checkbox-label">
+            <input type="checkbox" id="onlyNumbersCheckbox">
+            🔢 Only numbers (filter out non-numeric tokens like "0:00", "full", etc.)
+        </label>
+        <span class="filter-note" id="filterNote"></span>
+    </div>
 
     <div id="results" class="results">
         <div class="loading">paste token data and click "Analyze Tokens"</div>
@@ -168,20 +200,40 @@
     const tokenInput = document.getElementById('tokenInput');
     const sortBtn = document.getElementById('sortBtn');
     const resultsDiv = document.getElementById('results');
+    const onlyNumbersCheckbox = document.getElementById('onlyNumbersCheckbox');
+    const filterNote = document.getElementById('filterNote');
 
-    function parseSentences(text) {
+    function isNumeric(token) {
+        return /^\d+$/.test(token);
+    }
+
+    function parseSentences(text, onlyNumbers) {
         // Split by newlines, each line is a sentence
         const lines = text.split(/\r?\n/);
         const sentences = [];
+        let filteredCount = 0;
+        
         for (const line of lines) {
             const trimmed = line.trim();
             if (trimmed) {
-                const tokens = trimmed.split(/\s+/);
+                let tokens = trimmed.split(/\s+/);
+                if (onlyNumbers) {
+                    const originalLength = tokens.length;
+                    tokens = tokens.filter(token => isNumeric(token));
+                    filteredCount += originalLength - tokens.length;
+                }
                 if (tokens.length > 0) {
                     sentences.push(tokens);
                 }
             }
         }
+        
+        if (onlyNumbers && filteredCount > 0) {
+            filterNote.textContent = `(filtered out ${filteredCount} non-numeric tokens)`;
+        } else {
+            filterNote.textContent = '';
+        }
+        
         return sentences;
     }
 
@@ -242,14 +294,6 @@
             const barWidth = (stats.count / maxCount) * 100;
             const meanPercent = (stats.mean * 100).toFixed(1);
             const medianPercent = (stats.median * 100).toFixed(1);
-            
-            // Determine position description
-            let positionHint = '';
-            if (stats.mean > 0.9) positionHint = 'almost always at END';
-            else if (stats.mean > 0.7) positionHint = 'usually near END';
-            else if (stats.mean < 0.1) positionHint = 'almost always at START';
-            else if (stats.mean < 0.3) positionHint = 'usually near START';
-            else positionHint = 'mid-sentence';
             
             html += `
                 <div class="token-row" data-token="${escapeHtml(token)}" data-mean="${meanPercent}" data-median="${medianPercent}" data-count="${stats.count}" data-positions="${stats.positions.slice(0, 10).join(', ')}...">
@@ -343,7 +387,8 @@
             return;
         }
         
-        const sentences = parseSentences(rawText);
+        const onlyNumbers = onlyNumbersCheckbox.checked;
+        const sentences = parseSentences(rawText, onlyNumbers);
         if (sentences.length === 0) {
             resultsDiv.innerHTML = '<div style="color: #8c7a66; text-align: center;">⚠️ no valid token lines found</div>';
             return;
@@ -355,6 +400,7 @@
     }
     
     sortBtn.addEventListener('click', analyze);
+    onlyNumbersCheckbox.addEventListener('change', analyze);
     
     // Pre-populate with example data (timestamps removed)
     const example = `9514 1766 433

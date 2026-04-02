@@ -2,57 +2,70 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Token Codec · ARG Cipher Tool</title>
     <style>
-        * { box-sizing: border-box; }
-        body {
-            font-family: system-ui, 'Segoe UI', monospace;
-            background: #f5f2e8;
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 2rem;
+        * {
+            box-sizing: border-box;
         }
-        .container {
-            background: white;
-            border-radius: 2rem;
-            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.2);
-            padding: 2rem;
+        body {
+            font-family: system-ui, 'Segoe UI', 'Fira Code', monospace;
+            background: #1e1b1a;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .app {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #f5f2e8;
+            max-width: 1600px;
+            margin: 0 auto;
             width: 100%;
-            max-width: 1100px;
+            padding: 1.5rem;
+            gap: 1.2rem;
+            overflow-y: auto;
+        }
+        header {
+            margin-bottom: 0.5rem;
         }
         h1 {
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             font-weight: 500;
-            margin: 0 0 0.25rem 0;
-            letter-spacing: -0.3px;
+            margin: 0;
             color: #1e1b1a;
+            display: inline-block;
+            background: linear-gradient(135deg, #e67e22, #b95f1a);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
         }
         .sub {
             color: #5e5a58;
-            margin-bottom: 2rem;
+            font-size: 0.85rem;
+            margin-top: 0.2rem;
             border-left: 3px solid #e67e22;
-            padding-left: 1rem;
-            font-size: 0.9rem;
+            padding-left: 0.8rem;
         }
-        .workspace {
+        .main-row {
             display: flex;
             flex-wrap: wrap;
             gap: 1.5rem;
-            justify-content: center;
-            align-items: stretch;
+            flex: 2;
+            min-height: 400px;
         }
         .panel {
             flex: 1;
-            min-width: 280px;
             background: #fefcf8;
             border-radius: 1.2rem;
-            padding: 1rem;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            padding: 1.2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             border: 1px solid #e9e2d4;
+            display: flex;
+            flex-direction: column;
         }
         .panel label {
             font-weight: 600;
@@ -65,9 +78,10 @@
         }
         textarea {
             width: 100%;
+            flex: 1;
             border: 1px solid #ddd2c0;
             border-radius: 1rem;
-            padding: 1rem;
+            padding: 0.8rem;
             font-family: 'SF Mono', 'Fira Code', monospace;
             font-size: 0.9rem;
             background: white;
@@ -92,7 +106,7 @@
             color: white;
             font-weight: 600;
             font-size: 1rem;
-            padding: 0.6rem 1.2rem;
+            padding: 0.7rem 1.5rem;
             border-radius: 3rem;
             cursor: pointer;
             transition: all 0.15s;
@@ -106,18 +120,35 @@
         button:active {
             background: #b95f1a;
         }
-        .dictionary-card {
-            margin-top: 2rem;
+        .dictionary-editor {
             background: #f7f3ec;
             border-radius: 1rem;
-            padding: 1rem 1.2rem;
-            font-size: 0.85rem;
+            padding: 1rem;
             border: 1px solid #e6ddcf;
         }
-        .dictionary-card summary {
+        .dict-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .dict-header label {
             font-weight: 600;
-            cursor: pointer;
             color: #4a3b2c;
+        }
+        .dict-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .dict-actions button {
+            padding: 0.3rem 1rem;
+            font-size: 0.8rem;
+            background: #6b5a48;
+        }
+        .dict-actions button:hover {
+            background: #e67e22;
         }
         pre {
             background: #2e2a27;
@@ -126,30 +157,43 @@
             border-radius: 0.8rem;
             overflow-x: auto;
             font-size: 0.8rem;
-            margin: 0.8rem 0 0 0;
+            margin: 0;
+        }
+        .json-editor {
+            font-family: monospace;
+            background: #2e2a27;
+            color: #f8eedb;
+            border: 1px solid #4a3b2c;
+            border-radius: 0.8rem;
+            padding: 0.8rem;
+            width: 100%;
+            resize: vertical;
+            font-size: 0.8rem;
         }
         footer {
             text-align: center;
             font-size: 0.7rem;
             color: #8c7a66;
-            margin-top: 1.5rem;
+            margin-top: 1rem;
         }
-        @media (max-width: 700px) {
-            .workspace { flex-direction: column; }
+        @media (max-width: 900px) {
+            .main-row { flex-direction: column; }
             .button-group { flex-direction: row; justify-content: center; }
-            body { padding: 1rem; }
+            .app { padding: 1rem; }
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>⚙️ TOKEN CODEC</h1>
-    <div class="sub">encode ⇄ decode | custom dictionary (ARG token cipher)</div>
+<div class="app">
+    <header>
+        <h1>⚙️ TOKEN CODEC</h1>
+        <div class="sub">encode ⇄ decode | editable dictionary | ARG token cipher</div>
+    </header>
 
-    <div class="workspace">
+    <div class="main-row">
         <div class="panel">
             <label>📝 PLAINTEXT (encode input / decode result)</label>
-            <textarea id="plainBox" rows="5" placeholder="Example:&#10;i love you&#10;&#10;Or after decode: i love you">i love you</textarea>
+            <textarea id="plainBox" rows="8" placeholder="Enter plaintext or decoded result here...&#10;Example:&#10;i love you"></textarea>
         </div>
 
         <div class="button-group">
@@ -159,60 +203,314 @@
 
         <div class="panel">
             <label>🔢 TOKEN STRING (decode input / encode result)</label>
-            <textarea id="tokenBox" rows="5" placeholder="Example:&#10;40 3476 345">40 3476 345</textarea>
+            <textarea id="tokenBox" rows="8" placeholder="Space-separated tokens&#10;Example:&#10;40 3476 345"></textarea>
         </div>
     </div>
 
-    <details class="dictionary-card">
-        <summary>📖 Token dictionary (built‑in) – click to expand</summary>
-        <pre id="dictPreview"></pre>
-        <p style="margin: 0.5rem 0 0 0; font-size: 0.75rem; color: #6b5a48;">
-            ⚡ <strong>Encoding:</strong> longest phrase match (case‑sensitive). Unknown substrings stay as‑is.<br>
-            ⚡ <strong>Decoding:</strong> unknown tokens become <code> token </code> (spaced) to preserve separation.<br>
-            ⚡ <strong>Multi‑line:</strong> each line is processed independently; output preserves line breaks.
+    <div class="dictionary-editor">
+        <div class="dict-header">
+            <label>📖 TOKEN DICTIONARY (JSON)</label>
+            <div class="dict-actions">
+                <button id="applyDictBtn">Apply Dictionary</button>
+                <button id="resetDictBtn">Reset Default</button>
+            </div>
+        </div>
+        <textarea id="dictEditor" class="json-editor" rows="6" spellcheck="false"></textarea>
+        <p style="margin: 0.5rem 0 0 0; font-size: 0.7rem; color: #6b5a48;">
+            ⚡ Format: { "token": "word", ... } — tokens are numbers, words can include spaces.<br>
+            ⚡ After editing, click "Apply Dictionary" to use the new mapping.<br>
+            ⚡ Decoding: unknown tokens become <code> token </code> (spaced). Encoding: longest phrase match.
         </p>
-    </details>
+    </div>
     <footer>
         ← encode: plaintext → token string &nbsp;&nbsp;|&nbsp;&nbsp; decode: token string → plaintext →
     </footer>
 </div>
 
 <script>
-    // ---------- CORE DICTIONARY (TOKEN → WORD) ----------
-    const TOKEN_DICT = {
+    // ----- DEFAULT DICTIONARY -----
+    const DEFAULT_DICT = { // [brackets] around words mean unsure. [<connect][ed>] words are words that are connected but not known how they split exactly. [/guess/] are guesses that have little evidence.
         "40": "i",
         "3476": " love",
-        "345": " you"
-        // you can easily add more tokens here, e.g.:
-        // "100": " hello",
-        // "200": " world"
+        "345": " you",
+        "13": ".",
+        "3427": "go",
+        "10411": " north",
+        "10007": " south",
+        "9909": " west",
+        "3947": "there",
+        "374": " is",
+        "912": " no",
+        "4974": " exit",
+        "311": " to",
+        "279": " the",
+        "2181": "it",
+        "5992": " looks",
+        "1093": " like",
+        "499": " you",
+        "7041": " exactly",
+        "264": " a",
+        "6134": " door",
+        "1618": " here",
+        "1102": " it",
+        "374": " is",
+        "16447": " locked",
+        "56121": "unlock",
+        "23956": "which",
+        "1401": " key",
+        "30": "?",
+        "791": "the",
+        "18809": " fits",
+        "16264": " opens",
+        "11": ",",
+        "11509": " standing",
+        "49685": " upright",
+        "389": " on",
+        "6558": " floor",
+        "6861": "drop",
+        "682": " all",
+        "7039": " keys",
+        "37138": " brass",
+        "1903": " made",
+        "315": " of",
+        "7732": " wood",
+        "1202": " its",
+        "1866": " own",
+        "4096": " description", // 4096 is my favourite number woooo!!! :D:D:D:D lol
+        "9137": "break",
+        "14965": "who",
+        "1097": " am",
+        "358": " i",
+        "2675": "you",
+        "527": " are",
+        "2851": " player",
+        "1920": " process",
+        "430": " that",
+        "16181": " reads",
+        "3130": " room",
+        "323": " [and:1]",
+        "14238": " writes",
+        "1828": " next",
+        "3290": " command",
+        "5439": " written",
+        "555": " by",
+        "12612": "describe",
+        "2555": " something",
+        "19093": " nobody",
+        "706": " has",
+        "3596": " ever",
+        "4973": "game",
+        "6924": " saved",
+        "304": " in",
+        "449": " with",
+        "1440": " know",
+        "1148": " who",
+        "57813": "nobody",
+        "53159": " hears",
+        "32637": "quit",
+        "11787": "are",
+        "2771": " sure",
+        "1390": " want",
+        "17257": " quit",
+        "32": "a",
+        "23874": " sits",
+        "30488": " beside",
+        "433": " it",
+        "1825": " open",
+        "74742": "behind",
+        "1890": " same",
+        "8208": " gone",
+        "10168": " holding",
+        "1317": " long",
+        "46979": " corridor",
+        "14620": " walls",
+        "32393": " lined",
+        "2363": " book",
+        "7216": " figure",
+        "13656": " stands",
+        "520": " at",
+        "3117": " far",
+        "842": " end",
+        "13176": " facing",
+        "3201": " away",
+        "10800": " turns",
+        "2212": " around",
+        "13359": "thank",
+        "369": " for",
+        "47208": " contacting",
+        "1862": " support",
+        "7927": "your",
+        "13240": " estimated",
+        "3868": " wait",
+        "892": " time",
+        "25": ":",
+        "16058": " forever",
+        "3957": "is",
+        "1070": " there",
+        "4205": " anything",
+        "775": " else",
+        "649": " can",
+        "1520": " help",
+        "3432": " today",
+        "12840": "what",
+        "2846": " am",
+        "14931": " sorry",
+        "1541": " do",
+        "956": " not",
+        "617": " have",
+        "2680": " access",
+        "2038": " information",
+        "29089": "would",
+        "757": " me",
+        "8481": " transfer",
+        "24687": " specialist",
+        "548": "are",
+        "2520": "for",
+        "4367": " quality",
+        "44701": " assurance",
+        "10096": " purposes",
+        "420": " this",
+        "10652": " conversation",
+        "1253": " may",
+        "387": " be",
+        "41223": " monitored",
+        "477": " or",
+        "12715": " recorded",
+        "2288": " too",
+        "1690": " many",
+        "18311": " teeth",
+        "4251": " white",
+        "9501": " metal",
+        "644": "[in:1]",
+        "2035": " place",
+        "18327": " mirror",
+        "888": "read",
+        "7349": "look",
+        "1518": " see",
+        "6261": " yourself",
+        "8291": " cursor",
+        "85122": " blinking",
+        "1584": " line",
+        "13863": " garden",
+        "4959": "each",
+        "23153": " flower",
+        "2204": " different",
+        "3492": " word",
+        "57713": " fountain",
+        "4219": " center",
+        "23914": " streams",
+        "1495": " text",
+        "40872": " upward",
+        "13486": "once",
+        "5304": " upon",
+        "275": "it",
+        "574": " was",
+        "6453": " dark",
+        "13766": " storm",
+        "88": "y",
+        "4477": " writing",
+        "1820": "the",
+        "8893": " patient",
+        "18911": " presents",
+        "258": "[in:2]",
+        "9071": " essay",
+        "690": " will",
+        "35603": " fragments",
+        "10205": " rise",
+        "73739": " [and:2]",
+        "1603": " dissolve",
+        "814": " before",
+        "6381": " finish",
+        "451": "dear",
+        "277": " [<sir]",
+        "28146": "[sir>]",
+        "13088": " [<madame]",
+        "309": "[madame>]",
+        "30345": "pick",
+        "19599": "walk",
+        "18742": " [furthest]",
+        "61943": " [flower]",
+        "19837": "[s]",
+        "10156": "just",
+        "36018": " vocabulary",
+        "32193": "[inventory]",
+        "75596": " [wilt]",
+        "291": "[ed]",
+        "6068": " drop",
+        "3820": " pick",
+        "709": " up",
+        "15357": "do",
+        "3619": " [understand]",
+        "327": "[exam]",
+        "20588": "[in:3]",
+        "15499": " closely",
+        "3077": " have",
+        "2646": " never",
+        "3970": " seen",
+        "6366": " beautiful",
+        "44084": " sunset",
+        "927": " over",
+        "939": "[<shelves]",
+        "4372": "[shelves>]",
     };
+    // NOTES:
+    // "in" is repeated too many times (3)
 
-    // Build reverse map (word/phrase → token) for encoding (longest match)
-    const phraseToToken = new Map();
+    // Current active dictionary
+    let TOKEN_DICT = { ...DEFAULT_DICT };
+
+    // Helper to rebuild reverse map (phrase → token) for encoding
+    let phraseToToken = new Map();
     let sortedPhrases = [];
-    for (const [token, phrase] of Object.entries(TOKEN_DICT)) {
-        phraseToToken.set(phrase, token);
-        sortedPhrases.push(phrase);
+
+    function rebuildReverseMap() {
+        phraseToToken.clear();
+        const phrases = [];
+        for (const [token, phrase] of Object.entries(TOKEN_DICT)) {
+            phraseToToken.set(phrase, token);
+            phrases.push(phrase);
+        }
+        sortedPhrases = phrases.sort((a, b) => b.length - a.length);
     }
-    sortedPhrases.sort((a, b) => b.length - a.length);
+
+    function updateDictionaryFromEditor() {
+        const editor = document.getElementById('dictEditor');
+        try {
+            const parsed = JSON.parse(editor.value);
+            if (typeof parsed === 'object' && parsed !== null) {
+                TOKEN_DICT = parsed;
+                rebuildReverseMap();
+                // Optionally show success feedback
+                editor.style.borderColor = '#2ecc71';
+                setTimeout(() => { editor.style.borderColor = '#4a3b2c'; }, 1000);
+            } else {
+                throw new Error('Invalid JSON');
+            }
+        } catch (e) {
+            alert('Invalid JSON. Please fix the syntax.');
+            editor.style.borderColor = '#e67e22';
+        }
+    }
+
+    function resetToDefault() {
+        TOKEN_DICT = { ...DEFAULT_DICT };
+        rebuildReverseMap();
+        document.getElementById('dictEditor').value = JSON.stringify(TOKEN_DICT, null, 2);
+        // Refresh UI if needed (no need to re-decode automatically)
+    }
 
     // ----- DECODING: token string → plain text (single line) -----
     function decodeLine(tokensStr) {
         if (!tokensStr.trim()) return "";
         const tokens = tokensStr.trim().split(/\s+/);
-        // Build the decoded string by concatenating each token's representation
         let result = "";
         for (const token of tokens) {
             if (TOKEN_DICT[token] !== undefined) {
-                // known token: append its dictionary value (may have leading/trailing spaces)
                 result += TOKEN_DICT[token];
             } else {
-                // unknown token: surround with spaces to separate from neighbors
                 result += " " + token + " ";
             }
         }
-        // Clean up leading/trailing spaces and collapse multiple spaces
         return result.trim().replace(/\s+/g, ' ');
     }
 
@@ -242,27 +540,27 @@
             }
         }
 
-        // Build output string: tokens separated by spaces, literals appended without extra spaces
         let output = "";
         for (let idx = 0; idx < resultTokens.length; idx++) {
             const piece = resultTokens[idx];
             if (TOKEN_DICT[piece] !== undefined) {
-                // token → add space before unless first element
                 if (output.length > 0 && !output.endsWith(" ")) output += " ";
                 output += piece;
             } else {
-                // literal character → just append
                 output += piece;
             }
         }
         return output.replace(/\s+/g, " ").trim();
     }
 
-    // ----- MULTI‑LINE HANDLERS -----
+    // ----- MULTI-LINE HANDLERS -----
     const plainBox = document.getElementById("plainBox");
     const tokenBox = document.getElementById("tokenBox");
     const encodeBtn = document.getElementById("encodeBtn");
     const decodeBtn = document.getElementById("decodeBtn");
+    const applyDictBtn = document.getElementById("applyDictBtn");
+    const resetDictBtn = document.getElementById("resetDictBtn");
+    const dictEditor = document.getElementById("dictEditor");
 
     encodeBtn.addEventListener("click", () => {
         const plain = plainBox.value;
@@ -278,22 +576,135 @@
         plainBox.value = decodedLines.join("\n");
     });
 
-    // --- populate dictionary preview ---
-    function renderDictPreview() {
-        const pre = document.getElementById("dictPreview");
-        pre.textContent = JSON.stringify(TOKEN_DICT, null, 2);
-    }
-    renderDictPreview();
-
-    // initial sync (example)
-    window.addEventListener("load", () => {
-        const initPlain = plainBox.value.trim();
-        if (initPlain === "i love you") {
-            tokenBox.value = encodeLine(initPlain);
-        } else if (tokenBox.value.trim() === "40 3476 345") {
-            plainBox.value = decodeLine(tokenBox.value);
-        }
+    applyDictBtn.addEventListener("click", () => {
+        updateDictionaryFromEditor();
+        // Optional: re‑decode current token box if you want immediate feedback
+        // But we'll just leave it; user can click decode again.
     });
+
+    resetDictBtn.addEventListener("click", () => {
+        resetToDefault();
+    });
+
+    // Initialise UI with default dictionary
+    function init() {
+        resetToDefault(); // sets TOKEN_DICT, rebuilds maps, fills editor
+        // Set example text
+        plainBox.value = `press "decode"`
+        tokenBox.value = `"brass key" video transcript:
+0:00 9514 1766 433
+0:01 2675 527 304 264 3130 449 912 14620 13
+0:02 3947 374 264 6134 1618 11 11509 49685 389 279 6558 13
+0:04 32 37138 1401 23874 30488 433 13
+0:06 2675 1825 279 6134 13
+0:07 74742 433 374 279 1890 3130 13
+0:08 791 1401 374 8208 13
+0:08 2675 527 10168 433 13
+0:12 3427 10411
+0:14 2675 527 304 264 1317 46979 13
+0:15 791 14620 527 32393 449 2363 939 4372 13
+0:17 32 7216 13656 520 279 3117 842 11 13176 3201 13
+0:20 327 20588 7216
+0:21 791 7216 10800 2212 13
+0:23 2181 5992 1093 499 13
+0:24 2181 5992 7041 1093 499 13
+0:26 13359 499 369 47208 1862 13
+0:27 7927 13240 3868 892 374 25 16058 13
+0:28 3957 1070 4205 775 358 649 1520 499 449 3432 30
+0:30 12840 527 499
+0:33 40 2846 14931 11 358 1541 956 617 2680 311 430 2038 13
+0:34 29089 499 1093 757 311 8481 499 311 264 24687 30
+0:38 548 499 757
+0:40 2520 4367 44701 10096 11 420 10652 1253 387 41223 477 12715 13
+0:43 2181 706 2288 1690 18311 13
+0:46 3427 10007
+0:48 2675 527 304 264 3130 13
+0:49 32 1401 23874 30488 433 13
+0:53 791 14620 527 4251 13
+0:55 2181 374 264 1401 13 1102 374 1903 315 9501 13
+0:59 3427 10411
+1:03 2675 527 304 264 1317 3130 13
+1:04 791 7216 374 8208 13
+1:05 644 1202 2035 374 264 18327 13
+1:07 888 2363
+1:08 2675 1825 264 2363 13
+1:14 7349 304 18327
+1:15 2675 1518 6261 13
+1:17 2675 527 264 8291 85122 520 279 842 315 264 1584 13
+1:19 15357 956 1427 2288 1317
+1:26 3427 10411
+1:27 2675 527 304 264 13863 13
+1:29 4959 23153 374 264 2204 3492 13
+1:30 70103 54233 328 878 11492 81957 87877 56
+1:32 32 57713 304 279 4219 23914 1495 40872 13
+1:35 327 20588 57713
+1:39 13486 5304 264 892
+1:39 275 574 264 6453 323 13766 88
+1:39 451 277 28146 477 13088 309 358 1097 4477 311
+1:40 1820 8893 18911 449
+1:41 258 420 9071 358 690
+1:42 791 35603 10205 323 73739 1603 814 649 6381 13
+1:45 30345 23153
+1:46 40642 11492
+1:48 85340 7391 3362
+1:49 12450 39164
+1:50 38 60737
+1:52 8989 15795 19228 13
+1:55 19599 311 18742 61943 19837
+1:58 48 3143 39 1901 64887 1539 42570 24929 84466 362 984 5660
+2:01 10156 279 842 315 279 36018 13
+2:03 19041 374 912 6964 13 814 24465 832 779 499 4265 3009 11689 13
+2:08 3947 527 912 11460 1070 13
+2:13 3427 10411
+2:15 3947 374 264 6134 1618 13 1102 374 16447 13
+2:17 32193
+2:18 32 37138 1401 13
+2:20 32 75596 291 23153 320 40642 11492 570
+2:23 56121 6134
+2:23 23956 1401 30
+2:26 791 1401 18809 13
+2:27 791 6134 16264 13
+2:29 3427 10411
+2:31 2675 527 304 264 3130 449 912 14620 13
+2:33 3947 374 264 6134 1618 11 11509 49685 389 279 6558 13
+2:34 32 37138 1401 23874 30488 433 13
+2:40 6861 682 7039
+2:41 2675 6068 279 37138 1401 13
+2:45 15357 956 3820 709 279 1401
+2:47 2675 3820 709 279 37138 1401 13
+2:51 3427 9909
+2:52 3947 374 912 4974 311 279 9909 13
+2:55 40 1541 956 3619 430 3290 13
+2:59 327 20588 6134 15499
+3:00 791 6134 374 1903 315 7732 13
+3:07 791 6134 374 1903 315 1202 1866 4096 13
+3:12 9137 6134
+3:16 791 9863 312 70208 13
+3:21 14965 1097 358
+3:22 2675 527 279 2851 13
+3:24 14965 374 279 2851
+3:26 791 2851 374 264 1920 430 16181 279 3130 323 14238 279 1828 3290 13
+3:28 14965 14238 279 3130
+3:30 791 3130 374 5439 555 264 1920 430 16181 279 3290 323 14238 279 1828 3130 13
+3:34 14965 527 499
+3:36 54 8506
+3:38 9210 596 279 961 814 1541 956 1390 499 311 3619
+3:40 12612 2555 499 3077 2646 3970
+3:43 2675 1518 264 6366 44084 927 279
+3:47 12612 2555 19093 706 3596 5439
+3:59 4973 6924 13
+4:01 2675 527 304 264 3130 449 912 14620 13
+4:09 40 1440 1148 499 527
+4:10 57813 53159 499 13
+4:11 3947 374 19093 1618 13
+4:18 32637
+4:19 11787 499 2771 499 1390 311 17257 30 320 56 20906 8
+4:22 2675 527 304 264 3130 449 912 14620 13
+4:33 6766 279 1847 13 358 2163 2555 304 279 1828 3130 13
+        `
+    }
+
+    init();
 </script>
 </body>
 </html>
