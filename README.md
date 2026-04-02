@@ -11,7 +11,7 @@ However, in the meantime you can [read this](https://github.com/Spin4team4096/ia
 @windymateOfficial2023 commented on `i am told`:  
 I think i have a theory to share : The [ SYSTEM ] here is actually not a machine or an AI chatbot , but a human being . Throughout the video , there are many hints given to us , which are almost intelligible due to the video's fast pace. On slowing the video down , we can see words like "BPM" , "heartbeat" appear. The sentence "You do not remember" also solidifies the fact that earlier , this was a normally functioning person, with the ability to remember just like any other human being . My theory is that , this person willingly or unwillingly became a part of a confidential project , turning the person from a human being , to a machine -- A SYSTEM.  
 
-I agree. I remember seeing "brain in a jar" in some video too (forgot which).  
+I agree. I remember seeing "i am brain in a jar" when watching `statistics`.
 
 # Code
 The code is made up of tokens, where each token is a number. For example, confirmed in the yt short `word`, token 3476 = ' love'. Yes, the space ' ' is part of the token.  
