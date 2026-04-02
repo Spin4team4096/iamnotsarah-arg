@@ -187,12 +187,12 @@
 <div class="app">
     <header>
         <h1>⚙️ TOKEN CODEC</h1>
-        <div class="sub">encode ⇄ decode | editable dictionary | ARG token cipher</div>
+        <div class="sub">This is a WIP, but the dictionary is already pretty decent. It's better at decoding than encoding fyi</div>
     </header>
 
     <div class="main-row">
         <div class="panel">
-            <label>📝 PLAINTEXT (encode input / decode result)</label>
+            <label>📝 PLAINTEXT</label>
             <textarea id="plainBox" rows="8" placeholder="Enter plaintext or decoded result here...&#10;Example:&#10;i love you"></textarea>
         </div>
 
@@ -202,28 +202,32 @@
         </div>
 
         <div class="panel">
-            <label>🔢 TOKEN STRING (decode input / encode result)</label>
+            <label>🔢 TOKEN CODE</label>
             <textarea id="tokenBox" rows="8" placeholder="Space-separated tokens&#10;Example:&#10;40 3476 345"></textarea>
         </div>
     </div>
 
-    <div class="dictionary-editor">
-        <div class="dict-header">
-            <label>📖 TOKEN DICTIONARY (JSON)</label>
-            <div class="dict-actions">
-                <button id="applyDictBtn">Apply Dictionary</button>
-                <button id="resetDictBtn">Reset Default</button>
+    <div class="dictionary-editor" style="display: flex; gap: 1rem;">
+        <div style="flex: 1;">
+            <div class="dict-header">
+                <label>📖 TOKEN DICTIONARY (JSON)</label>
+                <div class="dict-actions">
+                    <button id="applyDictBtn">Apply Dictionary</button>
+                    <button id="resetDictBtn">Reset Default</button>
+                </div>
+            </div>
+            <textarea id="dictEditor" class="json-editor" rows="6" spellcheck="false"></textarea>
+        </div>
+        <div style="flex: 1;">
+            <label>🔍 WORD SEARCH</label>
+            <input type="text" id="wordSearchInput" placeholder="Type a word..." style="width: 100%; padding: 0.5rem; margin-bottom: 0.5rem; border-radius: 0.5rem; border: 1px solid #ddd2c0; font-family: monospace;">
+            <div id="searchResults" style="background: #2e2a27; color: #f0ede8; border-radius: 0.8rem; padding: 0.5rem; max-height: 200px; overflow-y: auto; font-family: monospace; font-size: 0.8rem;">
+                <div style="color: #8c7a66;">Type to see matching tokens</div>
             </div>
         </div>
-        <textarea id="dictEditor" class="json-editor" rows="6" spellcheck="false"></textarea>
-        <p style="margin: 0.5rem 0 0 0; font-size: 0.7rem; color: #6b5a48;">
-            ⚡ Format: { "token": "word", ... } — tokens are numbers, words can include spaces.<br>
-            ⚡ After editing, click "Apply Dictionary" to use the new mapping.<br>
-            ⚡ Decoding: unknown tokens become <code> token </code> (spaced). Encoding: longest phrase match.
-        </p>
     </div>
     <footer>
-        ← encode: plaintext → token string &nbsp;&nbsp;|&nbsp;&nbsp; decode: token string → plaintext →
+        This is not perfect. If you find anything weird, let me know ;)
     </footer>
 </div>
 
@@ -253,7 +257,6 @@
         "6134": " door",
         "1618": " here",
         "1102": " it",
-        "374": " is",
         "16447": " locked",
         "56121": "unlock",
         "23956": "which",
@@ -490,6 +493,7 @@
             alert('Invalid JSON. Please fix the syntax.');
             editor.style.borderColor = '#e67e22';
         }
+        updateWordSearch();
     }
 
     function resetToDefault() {
@@ -497,7 +501,74 @@
         rebuildReverseMap();
         document.getElementById('dictEditor').value = JSON.stringify(TOKEN_DICT, null, 2);
         // Refresh UI if needed (no need to re-decode automatically)
+        updateWordSearch();
     }
+
+    function normalizeForSearch(phrase) {
+        // Remove surrounding brackets and normalize patterns, preserving leading/trailing spaces.
+        let result = phrase;
+        let match = result.match(/^(\s*)\[([^\]]+)\](.*)$/);
+        if (match) {
+            let inner = match[2];
+            inner = inner.replace(/^\//, '').replace(/\/$/, '');
+            inner = inner.replace(/:\d+$/, '');
+            if (inner.startsWith('<')) inner = '<' + inner.slice(1);
+            if (inner.endsWith('>')) inner = inner.slice(0, -1) + '>';
+            result = match[1] + inner + match[3];
+        }
+        return result;
+    }
+
+    function updateWordSearch() {
+        const input = document.getElementById('wordSearchInput').value;
+        const resultsDiv = document.getElementById('searchResults');
+        if (!input.trim()) {
+            resultsDiv.innerHTML = '<div style="color: #8c7a66;">Type to see matching tokens</div>';
+            return;
+        }
+
+        // Normalize search term (remove brackets, etc.) but keep original for display
+        const searchTerm = input;
+        const normalizedSearch = normalizeForSearch(searchTerm);
+        const trimmedNormalizedSearch = normalizedSearch.trim();
+
+        const exactMatches = [];      // normalized phrase == normalized search (green)
+        const spaceVariantMatches = []; // trimmed equal but not exact (yellow)
+        const containsMatches = [];    // normalized phrase contains normalized search (red)
+
+        for (const [token, phrase] of Object.entries(TOKEN_DICT)) {
+            const normalizedPhrase = normalizeForSearch(phrase);
+            const trimmedNormalizedPhrase = normalizedPhrase.trim();
+
+            if (normalizedPhrase === normalizedSearch) {
+                exactMatches.push({ token, phrase });
+            } else if (trimmedNormalizedPhrase === trimmedNormalizedSearch) {
+                spaceVariantMatches.push({ token, phrase });
+            } else if (normalizedPhrase.includes(normalizedSearch)) {
+                containsMatches.push({ token, phrase });
+            }
+        }
+
+        if (exactMatches.length === 0 && spaceVariantMatches.length === 0 && containsMatches.length === 0) {
+            resultsDiv.innerHTML = '<div style="color: #8c7a66;">No matches</div>';
+            return;
+        }
+
+        let html = '';
+        for (const m of exactMatches) {
+            html += `<div style="color: #90EE90; margin-bottom: 0.2rem;">${m.token} = '${m.phrase}'</div>`;
+        }
+        for (const m of spaceVariantMatches) {
+            html += `<div style="color: #FFD700; margin-bottom: 0.2rem;">${m.token} = '${m.phrase}'</div>`;
+        }
+        for (const m of containsMatches) {
+            html += `<div style="color: #FFA07A; margin-bottom: 0.2rem;">${m.token} = '${m.phrase}'</div>`;
+        }
+        resultsDiv.innerHTML = html;
+    }
+
+    // Add event listener after init
+    document.getElementById('wordSearchInput').addEventListener('input', updateWordSearch);
 
     // ----- DECODING: token string → plain text (single line) -----
     function decodeLine(tokensStr) {
@@ -511,10 +582,47 @@
                 result += " " + token + " ";
             }
         }
-        return result.trim().replace(/\s+/g, ' ');
+        return result.replace(/\s+/g, ' ');
     }
 
     // ----- ENCODING: plain text → token string (single line, longest phrase match) -----
+    function normalizeBrackets(phrase) {
+        // Remove surrounding brackets and normalize patterns, preserving leading/trailing spaces.
+        let result = phrase;
+        // Pattern: [word], [/word/], [word:num], [<word], [word>]
+        let match = result.match(/^(\s*)\[([^\]]+)\](.*)$/);
+        if (match) {
+            let inner = match[2];
+            inner = inner.replace(/^\//, '').replace(/\/$/, ''); // remove slashes
+            inner = inner.replace(/:\d+$/, ''); // remove :number
+            // handle < and > inside brackets
+            if (inner.startsWith('<')) inner = '<' + inner.slice(1);
+            if (inner.endsWith('>')) inner = inner.slice(0, -1) + '>';
+            result = match[1] + inner + match[3];
+        }
+        return result;
+    }
+
+    // Build a map of normalized phrases to their tokens (for encoding)
+    let normalizedToToken = new Map(); // normalized string -> token (first encountered)
+
+    function rebuildReverseMap() {
+        phraseToToken.clear();
+        normalizedToToken.clear();
+        const phrases = [];
+        for (const [token, phrase] of Object.entries(TOKEN_DICT)) {
+            phraseToToken.set(phrase, token);
+            phrases.push(phrase);
+            // store normalized version (first token wins)
+            const norm = normalizeBrackets(phrase);
+            if (!normalizedToToken.has(norm)) {
+                normalizedToToken.set(norm, token);
+            }
+        }
+        // Sort by length descending for greedy matching (using original phrase lengths)
+        sortedPhrases = phrases.sort((a, b) => b.length - a.length);
+    }
+
     function encodeLine(plainText) {
         if (!plainText) return "";
         let input = plainText;
@@ -524,14 +632,26 @@
 
         while (i < len) {
             let matched = false;
+            // Try exact match on original phrases first (longest)
             for (const phrase of sortedPhrases) {
                 const phraseLen = phrase.length;
                 if (i + phraseLen <= len && input.substring(i, i + phraseLen) === phrase) {
-                    const token = phraseToToken.get(phrase);
-                    resultTokens.push(token);
+                    resultTokens.push(phraseToToken.get(phrase));
                     i += phraseLen;
                     matched = true;
                     break;
+                }
+            }
+            if (!matched) {
+                // Try normalized match: for each normalized phrase, use its normalized length
+                for (const [normPhrase, token] of normalizedToToken.entries()) {
+                    const normLen = normPhrase.length;
+                    if (i + normLen <= len && input.substring(i, i + normLen) === normPhrase) {
+                        resultTokens.push(token);
+                        i += normLen;
+                        matched = true;
+                        break;
+                    }
                 }
             }
             if (!matched) {
@@ -541,8 +661,7 @@
         }
 
         let output = "";
-        for (let idx = 0; idx < resultTokens.length; idx++) {
-            const piece = resultTokens[idx];
+        for (const piece of resultTokens) {
             if (TOKEN_DICT[piece] !== undefined) {
                 if (output.length > 0 && !output.endsWith(" ")) output += " ";
                 output += piece;
@@ -590,7 +709,7 @@
     function init() {
         resetToDefault(); // sets TOKEN_DICT, rebuilds maps, fills editor
         // Set example text
-        plainBox.value = `press "decode"`
+        plainBox.value = `i understand something. do you want help?`
         tokenBox.value = `"brass key" video transcript:
 0:00 9514 1766 433
 0:01 2675 527 304 264 3130 449 912 14620 13

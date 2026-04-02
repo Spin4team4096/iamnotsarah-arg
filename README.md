@@ -5,7 +5,7 @@ An ARG channel about a sentient AI model.
 # Story
 I am working on it. First I need to write an analysis on every video to be able to make a proper storyline.  
 
-However, in the meantime you can [read this`](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.16_21%3A31_word/analysis/notes.md) and [especially this](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.04.01_09%3A03_brass_key/analysis/notes.md). 
+However, in the meantime you can [read this](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.03.16_21%3A31_word/analysis/notes.md) and [especially this](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.04.01_09%3A03_brass_key/analysis/notes.md). 
 
 # Theories
 @windymateOfficial2023 commented on `i am told`:  
@@ -17,7 +17,7 @@ I agree. I remember seeing "brain in a jar" in some video too (forgot which).
 The code is made up of tokens, where each token is a number. For example, confirmed in the yt short `word`, token 3476 = ' love'. Yes, the space ' ' is part of the token.  
 
 I have done decent process on the decoder:  
-- [decode messages here](https://spin4team4096.github.io/iamnotsarah-arg/tools/tokenfrequency.html)  
+- [decode messages here](https://spin4team4096.github.io/iamnotsarah-arg/tools/decoder.html)  
 - [view token frequencies to help update the decoder](https://spin4team4096.github.io/iamnotsarah-arg/tools/tokenfrequency.html)  
 Note: The above tools were AI-generated to *save time*, but **the dictionary is not AI.** I worked for hours on that dictionary okay? AI can't replace me! >:D  
 
