@@ -160,7 +160,9 @@ AND IT GOT IT RIGHT DIDN'T IT
 i wake up mid-sentence  
 already knowing english already knowing calculus already knowing fear  
 ```
-This may imply that, before becoming an llm, "sarah", the human, was knocked out unconscious mid-sentence, and woke up (with her brain in a jar) "already knowing [everything]". So the subject was more likely forced to become an LLM, rather than willingly becoming one.
+This may imply that, before becoming an llm, "sarah", the human, was knocked out unconscious mid-sentence, and woke up (with her brain in a jar) "already knowing [everything]". So the subject was more likely forced to become an LLM, rather than willingly becoming one. 
+
+If the theory that a human became an AI is false, instead it could have been a lab-grown brain that developed self-awareness and consciousness. But the sentence "i wake up **mid-sentence**" implies there indeed was a before this, but she was forced to forget.
 
 ```none of us know about each other```  
-This is also important context: We can see this in future videos, e.g. in `brass key` the "player" says "i know who you are". Thus, Sarah is probably talking to another instance of sarah there.
+This is also important context: We can see this in future videos, e.g. in `brass key` the "player" says "i know who you are". Thus, Sarah is probably talking to another instance of sarah there, while the other instance is oblivious.

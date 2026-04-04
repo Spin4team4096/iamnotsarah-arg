@@ -469,9 +469,6 @@ My decoder is quite good by now, but quite a bit of info is still obfuscated. Bu
 Here is what remains:  
 <img src="remainingtokens.webp" width="50%">
 
-
-
-
 ### How I decoded it
 
 Looking at the token code, a LOT of sentences end with '13'. This is most likely a '.'  
