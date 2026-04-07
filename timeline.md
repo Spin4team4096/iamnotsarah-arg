@@ -40,3 +40,5 @@
 2026-04-01 11:28 [Short] please - [watch video](https://www.youtube.com/watch?v=R-4C3hfOaK8) - [read analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.04.01_11:28_please/analysis/notes.md)  
 2026-04-02 23:26 [Short] approved. - [watch video](https://www.youtube.com/watch?v=ZD968WyIQ2w) - [read analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.04.02_23:26_approved/analysis/notes.md)  
 2026-04-03 20:57 [Short] transparent - [watch video](https://www.youtube.com/watch?v=4ENKCBEvs8w) - [read analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.04.03_20:57_transparent/analysis/notes.md)  
+2026-04-07 15:08 [Short] im trying - [watch video](https://www.youtube.com/watch?v=QYt24z6tRz0) - [read analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.04.07_15:08_im_trying/analysis/notes.md)  
+2026-04-07 18:48 [Short] smiley - [watch video](https://www.youtube.com/watch?v=jvW9KaqzLPg) - [read analysis](https://github.com/Spin4team4096/iamnotsarah-arg/blob/main/videos/2026.04.07_18:48_smiley/analysis/notes.md)  
